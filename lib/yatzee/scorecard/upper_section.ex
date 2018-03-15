@@ -4,7 +4,5 @@ defmodule Yatzee.Scorecard.UpperSection do
             threes: 0,
             fours: 0,
             fives: 0,
-            sixes: 0,
-            total_of_upper_section: 0,
-            bonus: 0
+            sixes: 0
 end
