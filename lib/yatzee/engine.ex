@@ -16,10 +16,14 @@ defmodule Yatzee.Engine do
     %{ game | dices: dices }
   end
 
-  def choose(game, player_name, section, category) do
-    case Rules.check(game.dices, category) do
-      {:ok, ^category, value} -> {:ok, set_category(game, player_name, section, category, value)}
-      {:no_match, category} -> {:error, game}
+  def choose(game, player_name, category) do
+    with {:ok, ^category, value} <- Rules.check(game.dices, category),
+      :ok <- already_set?(game, player_name, category)
+    do
+      {:ok, set_category(game, player_name, category, value)}
+    else
+      :already_set -> {:already_set, game}
+      {:no_match, ^category} -> {:no_match, game}
     end
   end
 
@@ -31,11 +35,19 @@ defmodule Yatzee.Engine do
     }
   end
 
-  defp set_category(game, player_name, section, category, value) do
+  defp set_category(game, player_name, category, value) do
     update_in(
       game,
       [:players, player_name, :scorecard],
-      &Scorecard.update(&1, section, category, value)
+      &Scorecard.update(&1, category, value)
     )
+  end
+
+  defp already_set?(game, player_name, category) do
+    section_key = Scorecard.get_section(category)
+    case get_in(game, [:players, player_name, :scorecard, Access.key(section_key), Access.key(category)]) do
+      0 -> :ok
+      _ -> :already_set
+    end
   end
 end
