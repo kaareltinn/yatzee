@@ -36,15 +36,23 @@ defmodule Yatzee.Engine do
   end
 
   defp set_category(game, player_name, category, value) do
-    update_in(
+    section_key = Scorecard.get_section_key(category)
+
+    put_in(
       game,
-      [:players, player_name, :scorecard],
-      &Scorecard.update(&1, category, value)
+      [
+        :players,
+        player_name,
+        :scorecard,
+        Access.key(section_key),
+        Access.key(category)
+      ],
+      value
     )
   end
 
   defp already_set?(game, player_name, category) do
-    section_key = Scorecard.get_section(category)
+    section_key = Scorecard.get_section_key(category)
     case get_in(game, [:players, player_name, :scorecard, Access.key(section_key), Access.key(category)]) do
       0 -> :ok
       _ -> :already_set

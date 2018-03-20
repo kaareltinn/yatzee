@@ -34,7 +34,7 @@ defmodule YatzeeTest do
                   "Frank" => %{
                     scorecard: %Yatzee.Scorecard{
                       lower_section: %Yatzee.Scorecard.LowerSection{
-                        three_of_a_kind: 15
+                        three_of_a_kind: 22
                       }
                     }
                   }

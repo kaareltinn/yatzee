@@ -32,15 +32,7 @@ defmodule Yatzee.Scorecard do
     |> Enum.sum()
   end
 
-  def update(scorecard, category, value) do
-    section_key = get_section(category)
-    {:ok, section} = Map.fetch(scorecard, section_key)
-    updated_section = section |> Map.put(category, value)
-
-    Map.put(scorecard, section_key, updated_section)
-  end
-
-  def get_section(category) do
+  def get_section_key(category) do
     if Enum.member?(@upper_section_fields, category) do
       :upper_section
     else
