@@ -5,6 +5,51 @@ defmodule Yatzee.RulesTest do
   alias Yatzee.Rules
 
   ###################
+  # :ones #
+  ###################
+  describe "when one dice have one" do
+    test "returns success tuple" do
+      dices = %{
+        one: %Dice{face: 5, name: :one},
+        two: %Dice{face: 5, name: :two},
+        three: %Dice{face: 5, name: :three},
+        four: %Dice{face: 6, name: :four},
+        five: %Dice{face: 1, name: :five}
+      }
+
+      assert {:ok, :ones, 1} = Rules.check(dices, :ones)
+    end
+  end
+
+  describe "when more than one dice have one" do
+    test "returns success tuple" do
+      dices = %{
+        one: %Dice{face: 1, name: :one},
+        two: %Dice{face: 5, name: :two},
+        three: %Dice{face: 5, name: :three},
+        four: %Dice{face: 1, name: :four},
+        five: %Dice{face: 1, name: :five}
+      }
+
+      assert {:ok, :ones, 3} = Rules.check(dices, :ones)
+    end
+  end
+
+  describe "when no dice have one" do
+    test "returns success tuple" do
+      dices = %{
+        one: %Dice{face: 5, name: :one},
+        two: %Dice{face: 5, name: :two},
+        three: %Dice{face: 5, name: :three},
+        four: %Dice{face: 6, name: :four},
+        five: %Dice{face: 2, name: :five}
+      }
+
+      assert {:no_match, :ones} = Rules.check(dices, :ones)
+    end
+  end
+
+  ###################
   # :three_of_a_kind #
   ###################
   describe "when three same faces check :three_of_a_kind" do

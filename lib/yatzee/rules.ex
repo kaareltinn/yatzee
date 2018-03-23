@@ -6,6 +6,12 @@ defmodule Yatzee.Rules do
     |> check(:yahtzee)
   end
 
+  def check(dices, :ones) do
+    dices
+    |> Enum.group_by(fn {_, %Dices.Dice{face: face}} -> face end)
+    |> verdict(:ones)
+  end
+
   def check(dices, :three_of_a_kind) do
     dices
     |> Enum.group_by(fn {_, %Dices.Dice{face: face}} -> face end)
@@ -40,6 +46,17 @@ defmodule Yatzee.Rules do
     |> Enum.sort()
     |> Enum.uniq()
     |> verdict(:large_straight)
+  end
+
+  defp verdict(dices, :ones) do
+    if Enum.any?(dices, fn {face, _} -> face == 1 end) do
+      dices
+      |> Map.get(1)
+      |> Dices.sum()
+      |> success_response(:ones)
+    else
+      {:no_match, :ones}
+    end
   end
 
   defp verdict(dices, :three_of_a_kind) do
