@@ -124,4 +124,80 @@ defmodule Yatzee.RulesTest do
       assert {:no_match, :full_house} = Rules.check(dices, :full_house)
     end
   end
+
+  ###################
+  # :small_straight #
+  ###################
+  describe "when dices have 1-2-3-4" do
+    test "returns success tuple" do
+      dices = %{
+        one: %Dice{face: 1, name: :one},
+        two: %Dice{face: 2, name: :two},
+        three: %Dice{face: 3, name: :three},
+        four: %Dice{face: 4, name: :four},
+        five: %Dice{face: 1, name: :five}
+      }
+
+      assert {:ok, :small_straight, 30} = Rules.check(dices, :small_straight)
+    end
+  end
+
+  describe "when dices have 2-3-4-5" do
+    test "returns success tuple" do
+      dices = %{
+        one: %Dice{face: 5, name: :one},
+        two: %Dice{face: 3, name: :two},
+        three: %Dice{face: 4, name: :three},
+        four: %Dice{face: 2, name: :four},
+        five: %Dice{face: 6, name: :five}
+      }
+
+      assert {:ok, :small_straight, 30} = Rules.check(dices, :small_straight)
+    end
+  end
+
+  describe "when dices have 3-4-5-6" do
+    test "returns success tuple" do
+      dices = %{
+        one: %Dice{face: 4, name: :one},
+        two: %Dice{face: 3, name: :two},
+        three: %Dice{face: 5, name: :three},
+        four: %Dice{face: 5, name: :four},
+        five: %Dice{face: 6, name: :five}
+      }
+
+      assert {:ok, :small_straight, 30} = Rules.check(dices, :small_straight)
+    end
+  end
+
+  ###################
+  # :large_straight #
+  ###################
+  describe "when dices have 1-2-3-4-5" do
+    test "returns success tuple" do
+      dices = %{
+        one: %Dice{face: 1, name: :one},
+        two: %Dice{face: 2, name: :two},
+        three: %Dice{face: 3, name: :three},
+        four: %Dice{face: 4, name: :four},
+        five: %Dice{face: 5, name: :five}
+      }
+
+      assert {:ok, :large_straight, 40} = Rules.check(dices, :large_straight)
+    end
+  end
+
+  describe "when dices have 2-3-4-5-6" do
+    test "returns success tuple" do
+      dices = %{
+        one: %Dice{face: 3, name: :one},
+        two: %Dice{face: 4, name: :two},
+        three: %Dice{face: 5, name: :three},
+        four: %Dice{face: 6, name: :four},
+        five: %Dice{face: 2, name: :five}
+      }
+
+      assert {:ok, :large_straight, 40} = Rules.check(dices, :large_straight)
+    end
+  end
 end
