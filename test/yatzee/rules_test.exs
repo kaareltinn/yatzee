@@ -93,4 +93,35 @@ defmodule Yatzee.RulesTest do
       assert {:ok, :four_of_a_kind, 25} = Rules.check(dices, :four_of_a_kind)
     end
   end
+
+  ###################
+  # :full_house #
+  ###################
+  describe "when dices contain full house" do
+    test "returns success tuple" do
+      dices = %{
+        one: %Dice{face: 5, name: :one},
+        two: %Dice{face: 5, name: :two},
+        three: %Dice{face: 5, name: :three},
+        four: %Dice{face: 1, name: :four},
+        five: %Dice{face: 1, name: :five}
+      }
+
+      assert {:ok, :full_house, 25} = Rules.check(dices, :full_house)
+    end
+  end
+
+  describe "when dices do not contain full house" do
+    test "returns success tuple" do
+      dices = %{
+        one: %Dice{face: 5, name: :one},
+        two: %Dice{face: 5, name: :two},
+        three: %Dice{face: 4, name: :three},
+        four: %Dice{face: 1, name: :four},
+        five: %Dice{face: 1, name: :five}
+      }
+
+      assert {:no_match, :full_house} = Rules.check(dices, :full_house)
+    end
+  end
 end
