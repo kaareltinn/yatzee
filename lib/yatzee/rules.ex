@@ -6,24 +6,6 @@ defmodule Yatzee.Rules do
     |> check(:yahtzee)
   end
 
-  def check(dices, :ones) do
-    dices
-    |> Enum.group_by(fn {_, %Dices.Dice{face: face}} -> face end)
-    |> verdict(:ones)
-  end
-
-  def check(dices, :three_of_a_kind) do
-    dices
-    |> Enum.group_by(fn {_, %Dices.Dice{face: face}} -> face end)
-    |> verdict(:three_of_a_kind)
-  end
-
-  def check(dices, :four_of_a_kind) do
-    dices
-    |> Enum.group_by(fn {_, %Dices.Dice{face: face}} -> face end)
-    |> verdict(:four_of_a_kind)
-  end
-
   def check(dices, :full_house) do
     dices
     |> Enum.group_by(fn {_, %Dices.Dice{face: face}} -> face end)
@@ -48,6 +30,12 @@ defmodule Yatzee.Rules do
     |> verdict(:large_straight)
   end
 
+  def check(dices, category) do
+    dices
+    |> Enum.group_by(fn {_, %Dices.Dice{face: face}} -> face end)
+    |> verdict(category)
+  end
+
   defp verdict(dices, :ones) do
     if Enum.any?(dices, fn {face, _} -> face == 1 end) do
       dices
@@ -56,6 +44,61 @@ defmodule Yatzee.Rules do
       |> success_response(:ones)
     else
       {:no_match, :ones}
+    end
+  end
+
+  defp verdict(dices, :twos) do
+    if Enum.any?(dices, fn {face, _} -> face == 2 end) do
+      dices
+      |> Map.get(2)
+      |> Dices.sum()
+      |> success_response(:twos)
+    else
+      {:no_match, :twos}
+    end
+  end
+
+  defp verdict(dices, :threes) do
+    if Enum.any?(dices, fn {face, _} -> face == 3 end) do
+      dices
+      |> Map.get(3)
+      |> Dices.sum()
+      |> success_response(:threes)
+    else
+      {:no_match, :threes}
+    end
+  end
+
+  defp verdict(dices, :fours) do
+    if Enum.any?(dices, fn {face, _} -> face == 4 end) do
+      dices
+      |> Map.get(4)
+      |> Dices.sum()
+      |> success_response(:fours)
+    else
+      {:no_match, :fours}
+    end
+  end
+
+  defp verdict(dices, :fives) do
+    if Enum.any?(dices, fn {face, _} -> face == 5 end) do
+      dices
+      |> Map.get(5)
+      |> Dices.sum()
+      |> success_response(:fives)
+    else
+      {:no_match, :fives}
+    end
+  end
+
+  defp verdict(dices, :sixes) do
+    if Enum.any?(dices, fn {face, _} -> face == 6 end) do
+      dices
+      |> Map.get(6)
+      |> Dices.sum()
+      |> success_response(:sixes)
+    else
+      {:no_match, :sixes}
     end
   end
 

@@ -50,6 +50,231 @@ defmodule Yatzee.RulesTest do
   end
 
   ###################
+  # :twos #
+  ###################
+  describe "when one dice have 2" do
+    test "returns success tuple" do
+      dices = %{
+        one: %Dice{face: 5, name: :one},
+        two: %Dice{face: 5, name: :two},
+        three: %Dice{face: 2, name: :three},
+        four: %Dice{face: 6, name: :four},
+        five: %Dice{face: 1, name: :five}
+      }
+
+      assert {:ok, :twos, 2} = Rules.check(dices, :twos)
+    end
+  end
+
+  describe "when more than one dice have 2" do
+    test "returns success tuple" do
+      dices = %{
+        one: %Dice{face: 2, name: :one},
+        two: %Dice{face: 5, name: :two},
+        three: %Dice{face: 2, name: :three},
+        four: %Dice{face: 2, name: :four},
+        five: %Dice{face: 1, name: :five}
+      }
+
+      assert {:ok, :twos, 6} = Rules.check(dices, :twos)
+    end
+  end
+
+  describe "when no dice have 2" do
+    test "returns success tuple" do
+      dices = %{
+        one: %Dice{face: 5, name: :one},
+        two: %Dice{face: 5, name: :two},
+        three: %Dice{face: 5, name: :three},
+        four: %Dice{face: 6, name: :four},
+        five: %Dice{face: 1, name: :five}
+      }
+
+      assert {:no_match, :twos} = Rules.check(dices, :twos)
+    end
+  end
+
+  ###################
+  # :threes #
+  ###################
+  describe "when one dice have 3" do
+    test "returns success tuple" do
+      dices = %{
+        one: %Dice{face: 3, name: :one},
+        two: %Dice{face: 2, name: :two},
+        three: %Dice{face: 2, name: :three},
+        four: %Dice{face: 6, name: :four},
+        five: %Dice{face: 1, name: :five}
+      }
+
+      assert {:ok, :threes, 3} = Rules.check(dices, :threes)
+    end
+  end
+
+  describe "when more than one dice have 3" do
+    test "returns success tuple" do
+      dices = %{
+        one: %Dice{face: 2, name: :one},
+        two: %Dice{face: 3, name: :two},
+        three: %Dice{face: 2, name: :three},
+        four: %Dice{face: 3, name: :four},
+        five: %Dice{face: 3, name: :five}
+      }
+
+      assert {:ok, :threes, 9} = Rules.check(dices, :threes)
+    end
+  end
+
+  describe "when no dice have 3" do
+    test "returns success tuple" do
+      dices = %{
+        one: %Dice{face: 5, name: :one},
+        two: %Dice{face: 5, name: :two},
+        three: %Dice{face: 5, name: :three},
+        four: %Dice{face: 6, name: :four},
+        five: %Dice{face: 1, name: :five}
+      }
+
+      assert {:no_match, :threes} = Rules.check(dices, :threes)
+    end
+  end
+
+  ###################
+  # :fours #
+  ###################
+  describe "when one dice have 4" do
+    test "returns success tuple" do
+      dices = %{
+        one: %Dice{face: 3, name: :one},
+        two: %Dice{face: 2, name: :two},
+        three: %Dice{face: 2, name: :three},
+        four: %Dice{face: 4, name: :four},
+        five: %Dice{face: 1, name: :five}
+      }
+
+      assert {:ok, :fours, 4} = Rules.check(dices, :fours)
+    end
+  end
+
+  describe "when more than one dice have 4" do
+    test "returns success tuple" do
+      dices = %{
+        one: %Dice{face: 4, name: :one},
+        two: %Dice{face: 4, name: :two},
+        three: %Dice{face: 2, name: :three},
+        four: %Dice{face: 3, name: :four},
+        five: %Dice{face: 4, name: :five}
+      }
+
+      assert {:ok, :fours, 12} = Rules.check(dices, :fours)
+    end
+  end
+
+  describe "when no dice have 4" do
+    test "returns success tuple" do
+      dices = %{
+        one: %Dice{face: 5, name: :one},
+        two: %Dice{face: 5, name: :two},
+        three: %Dice{face: 5, name: :three},
+        four: %Dice{face: 6, name: :four},
+        five: %Dice{face: 1, name: :five}
+      }
+
+      assert {:no_match, :fours} = Rules.check(dices, :fours)
+    end
+  end
+
+  ###################
+  # :fives #
+  ###################
+  describe "when one dice have 5" do
+    test "returns success tuple" do
+      dices = %{
+        one: %Dice{face: 3, name: :one},
+        two: %Dice{face: 2, name: :two},
+        three: %Dice{face: 5, name: :three},
+        four: %Dice{face: 6, name: :four},
+        five: %Dice{face: 1, name: :five}
+      }
+
+      assert {:ok, :fives, 5} = Rules.check(dices, :fives)
+    end
+  end
+
+  describe "when more than one dice have 5" do
+    test "returns success tuple" do
+      dices = %{
+        one: %Dice{face: 2, name: :one},
+        two: %Dice{face: 5, name: :two},
+        three: %Dice{face: 2, name: :three},
+        four: %Dice{face: 5, name: :four},
+        five: %Dice{face: 3, name: :five}
+      }
+
+      assert {:ok, :fives, 10} = Rules.check(dices, :fives)
+    end
+  end
+
+  describe "when no dice have 5" do
+    test "returns success tuple" do
+      dices = %{
+        one: %Dice{face: 1, name: :one},
+        two: %Dice{face: 2, name: :two},
+        three: %Dice{face: 3, name: :three},
+        four: %Dice{face: 6, name: :four},
+        five: %Dice{face: 1, name: :five}
+      }
+
+      assert {:no_match, :fives} = Rules.check(dices, :fives)
+    end
+  end
+
+  ###################
+  # :sixes #
+  ###################
+  describe "when one dice have 6" do
+    test "returns success tuple" do
+      dices = %{
+        one: %Dice{face: 3, name: :one},
+        two: %Dice{face: 2, name: :two},
+        three: %Dice{face: 5, name: :three},
+        four: %Dice{face: 6, name: :four},
+        five: %Dice{face: 1, name: :five}
+      }
+
+      assert {:ok, :sixes, 6} = Rules.check(dices, :sixes)
+    end
+  end
+
+  describe "when more than one dice have 6" do
+    test "returns success tuple" do
+      dices = %{
+        one: %Dice{face: 6, name: :one},
+        two: %Dice{face: 6, name: :two},
+        three: %Dice{face: 2, name: :three},
+        four: %Dice{face: 6, name: :four},
+        five: %Dice{face: 6, name: :five}
+      }
+
+      assert {:ok, :sixes, 24} = Rules.check(dices, :sixes)
+    end
+  end
+
+  describe "when no dice have 6" do
+    test "returns success tuple" do
+      dices = %{
+        one: %Dice{face: 1, name: :one},
+        two: %Dice{face: 2, name: :two},
+        three: %Dice{face: 3, name: :three},
+        four: %Dice{face: 5, name: :four},
+        five: %Dice{face: 1, name: :five}
+      }
+
+      assert {:no_match, :sixes} = Rules.check(dices, :sixes)
+    end
+  end
+
+  ###################
   # :three_of_a_kind #
   ###################
   describe "when three same faces check :three_of_a_kind" do
