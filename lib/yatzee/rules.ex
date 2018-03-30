@@ -30,6 +30,16 @@ defmodule Yatzee.Rules do
     |> verdict(:large_straight)
   end
 
+  def check(dices, :yahtzee) do
+    dices
+    |> Enum.map(fn {_, %Dices.Dice{face: face}} -> face end)
+    |> verdict(:yahtzee)
+  end
+
+  def check(dices, :chance) do
+    verdict(dices, :chance)
+  end
+
   def check(dices, category) do
     dices
     |> Enum.group_by(fn {_, %Dices.Dice{face: face}} -> face end)
@@ -145,12 +155,30 @@ defmodule Yatzee.Rules do
   defp verdict([3, 4, 5, 6], :small_straight) do
     success_response(30, :small_straight)
   end
+  defp verdict(_, :small_straight) do
+    {:no_match, :small_straight}
+  end
 
   defp verdict([1, 2, 3, 4, 5], :large_straight) do
     success_response(40, :large_straight)
   end
   defp verdict([2, 3, 4, 5, 6], :large_straight) do
     success_response(40, :large_straight)
+  end
+  defp verdict(_, :large_straight) do
+    {:no_match, :large_straight}
+  end
+
+  defp verdict([a, a, a, a, a], :yahtzee) do
+    success_response(50, :yahtzee)
+  end
+  defp verdict(_, :yahtzee) do
+    {:no_match, :yahtzee}
+  end
+
+  defp verdict(dices, :chance) do
+    Dices.sum(dices)
+    |> success_response(:chance)
   end
 
   defp success_response(value, category), do:

@@ -36,7 +36,7 @@ defmodule Yatzee.RulesTest do
   end
 
   describe "when no dice have one" do
-    test "returns success tuple" do
+    test "returns no match tuple" do
       dices = %{
         one: %Dice{face: 5, name: :one},
         two: %Dice{face: 5, name: :two},
@@ -81,7 +81,7 @@ defmodule Yatzee.RulesTest do
   end
 
   describe "when no dice have 2" do
-    test "returns success tuple" do
+    test "returns no match tuple" do
       dices = %{
         one: %Dice{face: 5, name: :one},
         two: %Dice{face: 5, name: :two},
@@ -126,7 +126,7 @@ defmodule Yatzee.RulesTest do
   end
 
   describe "when no dice have 3" do
-    test "returns success tuple" do
+    test "returns no match tuple" do
       dices = %{
         one: %Dice{face: 5, name: :one},
         two: %Dice{face: 5, name: :two},
@@ -171,7 +171,7 @@ defmodule Yatzee.RulesTest do
   end
 
   describe "when no dice have 4" do
-    test "returns success tuple" do
+    test "returns no match tuple" do
       dices = %{
         one: %Dice{face: 5, name: :one},
         two: %Dice{face: 5, name: :two},
@@ -216,7 +216,7 @@ defmodule Yatzee.RulesTest do
   end
 
   describe "when no dice have 5" do
-    test "returns success tuple" do
+    test "returns no match tuple" do
       dices = %{
         one: %Dice{face: 1, name: :one},
         two: %Dice{face: 2, name: :two},
@@ -261,7 +261,7 @@ defmodule Yatzee.RulesTest do
   end
 
   describe "when no dice have 6" do
-    test "returns success tuple" do
+    test "returns no match tuple" do
       dices = %{
         one: %Dice{face: 1, name: :one},
         two: %Dice{face: 2, name: :two},
@@ -292,7 +292,7 @@ defmodule Yatzee.RulesTest do
   end
 
   describe "when dices do not have three of a kind" do
-    test "returns error tuple" do
+    test "returns no match tuple" do
       dices = %{
         one: %Dice{face: 5, name: :one},
         two: %Dice{face: 5, name: :two},
@@ -337,7 +337,7 @@ defmodule Yatzee.RulesTest do
   end
 
   describe "when less than four dices have same face" do
-    test "returns success tuple" do
+    test "returns no match tuple" do
       dices = %{
         one: %Dice{face: 5, name: :one},
         two: %Dice{face: 5, name: :two},
@@ -382,7 +382,7 @@ defmodule Yatzee.RulesTest do
   end
 
   describe "when dices do not contain full house" do
-    test "returns success tuple" do
+    test "returns no match tuple" do
       dices = %{
         one: %Dice{face: 5, name: :one},
         two: %Dice{face: 5, name: :two},
@@ -440,6 +440,20 @@ defmodule Yatzee.RulesTest do
     end
   end
 
+  describe "when dices do not have small straight" do
+    test "returns no match tuple" do
+      dices = %{
+        one: %Dice{face: 4, name: :one},
+        two: %Dice{face: 5, name: :two},
+        three: %Dice{face: 5, name: :three},
+        four: %Dice{face: 5, name: :four},
+        five: %Dice{face: 6, name: :five}
+      }
+
+      assert {:no_match, :small_straight} = Rules.check(dices, :small_straight)
+    end
+  end
+
   ###################
   # :large_straight #
   ###################
@@ -469,5 +483,65 @@ defmodule Yatzee.RulesTest do
 
       assert {:ok, :large_straight, 40} = Rules.check(dices, :large_straight)
     end
+  end
+
+  describe "when dices do not have large straight" do
+    test "returns no match tuple" do
+      dices = %{
+        one: %Dice{face: 2, name: :one},
+        two: %Dice{face: 4, name: :two},
+        three: %Dice{face: 5, name: :three},
+        four: %Dice{face: 6, name: :four},
+        five: %Dice{face: 2, name: :five}
+      }
+
+      assert {:no_match, :large_straight} = Rules.check(dices, :large_straight)
+    end
+  end
+
+  ###################
+  # :yahtzee #
+  ###################
+  describe "when dices have all same face" do
+    test "returns success tuple" do
+      dices = %{
+        one: %Dice{face: 1, name: :one},
+        two: %Dice{face: 1, name: :two},
+        three: %Dice{face: 1, name: :three},
+        four: %Dice{face: 1, name: :four},
+        five: %Dice{face: 1, name: :five}
+      }
+
+      assert {:ok, :yahtzee, 50} = Rules.check(dices, :yahtzee)
+    end
+  end
+
+  describe "when dices have do not have same face" do
+    test "returns success tuple" do
+      dices = %{
+        one: %Dice{face: 3, name: :one},
+        two: %Dice{face: 4, name: :two},
+        three: %Dice{face: 5, name: :three},
+        four: %Dice{face: 6, name: :four},
+        five: %Dice{face: 2, name: :five}
+      }
+
+      assert {:no_match, :yahtzee} = Rules.check(dices, :yahtzee)
+    end
+  end
+
+  ###################
+  # :chance #
+  ###################
+  test "returns success tuple" do
+    dices = %{
+      one: %Dice{face: 1, name: :one},
+      two: %Dice{face: 2, name: :two},
+      three: %Dice{face: 3, name: :three},
+      four: %Dice{face: 4, name: :four},
+      five: %Dice{face: 5, name: :five}
+    }
+
+    assert {:ok, :chance, 15} = Rules.check(dices, :chance)
   end
 end
