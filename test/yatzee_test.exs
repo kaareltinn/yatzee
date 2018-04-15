@@ -4,12 +4,17 @@ defmodule YatzeeTest do
 
   alias Dices.Dice
 
-  test "new_game() returns new game" do
-    game = Yatzee.new_game(["Frank"])
+  test "add_player() returns add new player to the game" do
+    game = Yatzee.new_game() |> Yatzee.add_player("Frank")
 
     assert %{
              players: %{
-               "Frank" => %{name: "Frank", scorecard: %Yatzee.Scorecard{}, turns_left: 13}
+               0 => %{
+                 name: "Frank",
+                 scorecard: %Yatzee.Scorecard{},
+                 turns_left: 13,
+                 player_tag: 0
+               }
              }
            } = game
   end
@@ -31,7 +36,7 @@ defmodule YatzeeTest do
       assert {:ok,
               %{
                 players: %{
-                  "Frank" => %{
+                  0 => %{
                     scorecard: %Yatzee.Scorecard{
                       lower_section: %Yatzee.Scorecard.LowerSection{
                         three_of_a_kind: 22
@@ -39,7 +44,7 @@ defmodule YatzeeTest do
                     }
                   }
                 }
-              }} = Yatzee.choose(game, "Frank", :three_of_a_kind)
+              }} = Yatzee.choose(game, 0, :three_of_a_kind)
     end
 
     test "does not update field when dices do not match" do
@@ -58,7 +63,7 @@ defmodule YatzeeTest do
       assert {:no_match,
               %{
                 players: %{
-                  "Frank" => %{
+                  0 => %{
                     scorecard: %Yatzee.Scorecard{
                       lower_section: %Yatzee.Scorecard.LowerSection{
                         three_of_a_kind: 0
@@ -66,7 +71,7 @@ defmodule YatzeeTest do
                     }
                   }
                 }
-              }} = Yatzee.choose(game, "Frank", :three_of_a_kind)
+              }} = Yatzee.choose(game, 0, :three_of_a_kind)
     end
 
     test "does not update field when already set" do
@@ -82,7 +87,7 @@ defmodule YatzeeTest do
 
       game = %{game | dices: dices}
 
-      {:ok, game} = Yatzee.choose(game, "Frank", :three_of_a_kind)
+      {:ok, game} = Yatzee.choose(game, 0, :three_of_a_kind)
 
       dices = %{
         one: %Dice{face: 6, name: :one},
@@ -94,7 +99,7 @@ defmodule YatzeeTest do
 
       game = %{game | dices: dices}
 
-      assert {:already_set, ^game} = Yatzee.choose(game, "Frank", :three_of_a_kind)
+      assert {:already_set, ^game} = Yatzee.choose(game, 0, :three_of_a_kind)
     end
   end
 end
