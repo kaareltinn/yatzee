@@ -1,36 +1,57 @@
 defmodule Yatzee.States do
   def check(:add_player, %{state: :initializing} = game_state) do
-    %{game_state | state: :waiting_for_players}
+    success_response(game_state, :waiting_for_players)
   end
 
   def check(:add_player, %{state: :waiting_for_players} = game_state) do
-    game_state
+    success_response(game_state, :waiting_for_players)
   end
 
   def check(:start_game, %{state: :waiting_for_players} = game_state) do
-    %{game_state | state: {:throwing_1, get_next_player(game_state)}}
+    success_response(game_state, {:throwing_1, get_next_player(game_state)})
   end
 
   def check(:throw, %{state: {:throwing_1, player}} = game_state) do
-    %{game_state | state: {:throwing_2, player}}
+    success_response(game_state, {:throwing_2, player})
   end
 
   def check(:throw, %{state: {:throwing_2, player}} = game_state) do
-    %{game_state | state: {:throwing_3, player}}
+    success_response(game_state, {:throwing_3, player})
   end
 
   def check(:throw, %{state: {:throwing_3, player}} = game_state) do
-    %{game_state | state: {:choosing, player}}
+    success_response(game_state, {:choosing, player})
   end
 
   def check(:choose, %{state: {_, player}} = game_state) do
-    %{game_state | state: {:throwing_1, get_next_player(game_state, player)}}
+    success_response(
+      game_state,
+      {:throwing_1, get_next_player(game_state, player)}
+    )
   end
 
-  defp get_next_player(game, %{player_tag: current_player_tag}) do
+  def check(_, game_state) do
+    {:invalid_action, game_state}
+  end
+
+  defp get_next_player(game_state, %{player_tag: current_player_tag} = player) do
     next_player_tag = current_player_tag + 1
-    Map.get(game.player, next_player_tag, game.players[0])
+    player = Map.get(game_state.players, next_player_tag, game_state.players[0])
+    %{
+      name: player.name,
+      player_tag: player.player_tag
+    }
   end
 
-  defp get_next_player(game), do: game.players[0]
+  defp get_next_player(game_state) do
+    player = game_state.players[0]
+    %{
+      name: player.name,
+      player_tag: player.player_tag
+    }
+  end
+
+  defp success_response(game_state, state) do
+    {:ok, %{game_state | state: state}}
+  end
 end

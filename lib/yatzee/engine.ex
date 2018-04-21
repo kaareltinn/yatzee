@@ -1,6 +1,6 @@
 defmodule Yatzee.Engine do
 
-  alias Yatzee.{Rules, Scorecard, State}
+  alias Yatzee.{Rules, Scorecard, States}
 
   def new_game() do
     %{
@@ -20,22 +20,35 @@ defmodule Yatzee.Engine do
   end
 
   def add_player(game, name) do
-    new_player = new_player_state(game, name)
-    players = Map.put(game.players, new_player.player_tag, new_player)
-    %{ game | players: players}
+    with {:ok, %{state: :waiting_for_players} = game} <- States.check(:add_player, game)
+    do
+      new_player = new_player_state(game, name)
+      players = Map.put(game.players, new_player.player_tag, new_player)
+      %{ game | players: players}
+    else
+      {:invalid_action, game} -> {:invalid_action, game}
+    end
+  end
+
+  def start_game(game) do
+    States.check(:start_game, game)
   end
 
   def throw(game, dice_names) do
-    dices = Map.merge(game.dices, Dices.throw(game.dices, dice_names))
-    %{ game | dices: dices }
+    case States.check(:throw, game) do
+      {:ok, game} -> set_dices(game, dice_names)
+      {:invalid_action, game} -> game
+    end
   end
 
-  def choose(game, player_name, category) do
-    with {:ok, ^category, value} <- Rules.check(game.dices, category),
-      :ok <- already_set?(game, player_name, category)
+  def choose(game, player_tag, category) do
+    with {:ok, %{state: {:throwing_1, _}} = game} <- States.check(:choose, game),
+      {:ok, ^category, value} <- Rules.check(game.dices, category),
+      :ok <- already_set?(game, player_tag, category)
     do
-      {:ok, set_category(game, player_name, category, value)}
+      {:ok, set_category(game, player_tag, category, value)}
     else
+      {:invalid_action, game} -> {:invalid_action, game}
       :already_set -> {:already_set, game}
       {:no_match, ^category} -> {:no_match, game}
     end
@@ -75,6 +88,11 @@ defmodule Yatzee.Engine do
       ],
       value
     )
+  end
+
+  defp set_dices(game, dice_names) do
+    dices = Map.merge(game.dices, Dices.throw(game.dices, dice_names))
+    %{ game | dices: dices }
   end
 
   defp already_set?(game, player_tag, category) do

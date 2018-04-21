@@ -32,6 +32,7 @@ defmodule YatzeeTest do
       }
 
       game = %{game | dices: dices}
+      {:ok, game} = Yatzee.start_game(game)
 
       assert {:ok,
               %{
@@ -59,6 +60,7 @@ defmodule YatzeeTest do
       }
 
       game = %{game | dices: dices}
+      {:ok, game} = Yatzee.start_game(game)
 
       assert {:no_match,
               %{
@@ -86,6 +88,7 @@ defmodule YatzeeTest do
       }
 
       game = %{game | dices: dices}
+      {:ok, game} = Yatzee.start_game(game)
 
       {:ok, game} = Yatzee.choose(game, 0, :three_of_a_kind)
 
