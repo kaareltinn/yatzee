@@ -45,7 +45,7 @@ defmodule YatzeeTest do
                     }
                   }
                 }
-              }} = Yatzee.choose(game, 0, :three_of_a_kind)
+              }} = Yatzee.choose(game, :three_of_a_kind)
     end
 
     test "does not update field when dices do not match" do
@@ -73,7 +73,7 @@ defmodule YatzeeTest do
                     }
                   }
                 }
-              }} = Yatzee.choose(game, 0, :three_of_a_kind)
+              }} = Yatzee.choose(game, :three_of_a_kind)
     end
 
     test "does not update field when already set" do
@@ -90,7 +90,7 @@ defmodule YatzeeTest do
       game = %{game | dices: dices}
       {:ok, game} = Yatzee.start_game(game)
 
-      {:ok, game} = Yatzee.choose(game, 0, :three_of_a_kind)
+      {:ok, game} = Yatzee.choose(game, :three_of_a_kind)
 
       dices = %{
         one: %Dice{face: 6, name: :one},
@@ -102,7 +102,7 @@ defmodule YatzeeTest do
 
       game = %{game | dices: dices}
 
-      assert {:already_set, ^game} = Yatzee.choose(game, 0, :three_of_a_kind)
+      assert {:already_set, ^game} = Yatzee.choose(game, :three_of_a_kind)
     end
   end
 end
