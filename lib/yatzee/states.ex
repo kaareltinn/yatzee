@@ -23,10 +23,10 @@ defmodule Yatzee.States do
     success_response(game_state, {:choosing, player})
   end
 
-  def check(:choose, %{state: {_, player}} = game_state) do
+  def check(:choose, %{state: {_, current_player}} = game_state) do
     success_response(
       game_state,
-      {:throwing_1, get_next_player(game_state, player)}
+      {:throwing_1, get_next_player(game_state, current_player)}
     )
   end
 
