@@ -98,7 +98,7 @@ defmodule Yatzee.Engine do
   defp already_set?(game, player_tag, category) do
     section_key = Scorecard.get_section_key(category)
     case get_in(game, [:players, player_tag, :scorecard, Access.key(section_key), Access.key(category)]) do
-      0 -> :ok
+      :not_set -> :ok
       _ -> :already_set
     end
   end

@@ -24,10 +24,14 @@ defmodule Yatzee.States do
   end
 
   def check(:choose, %{state: {_, current_player}} = game_state) do
-    success_response(
-      game_state,
-      {:throwing_1, get_next_player(game_state, current_player)}
-    )
+    if game_finished?(game_state) do
+      success_response(game_state, :finished)
+    else
+      success_response(
+        game_state,
+        {:throwing_1, get_next_player(game_state, current_player)}
+      )
+    end
   end
 
   def check(_, game_state) do
@@ -53,5 +57,9 @@ defmodule Yatzee.States do
 
   defp success_response(game_state, state) do
     {:ok, %{game_state | state: state}}
+  end
+
+  def game_finished?(game_state) do
+    Enum.all?(game_state.players, fn {_, player} -> Yatzee.Scorecard.full?(player.scorecard) end)
   end
 end

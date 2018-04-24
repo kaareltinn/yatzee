@@ -39,4 +39,8 @@ defmodule Yatzee.Scorecard do
       :lower_section
     end
   end
+
+  def full?(scorecard) do
+    UpperSection.full?(scorecard.upper_section) && LowerSection.full?(scorecard.lower_section)
+  end
 end

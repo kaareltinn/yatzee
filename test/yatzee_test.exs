@@ -68,7 +68,7 @@ defmodule YatzeeTest do
                   0 => %{
                     scorecard: %Yatzee.Scorecard{
                       lower_section: %Yatzee.Scorecard.LowerSection{
-                        three_of_a_kind: 0
+                        three_of_a_kind: :not_set
                       }
                     }
                   }
