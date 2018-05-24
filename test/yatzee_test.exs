@@ -33,6 +33,36 @@ defmodule YatzeeTest do
 
       game = %{game | dices: dices}
       {:ok, game} = Yatzee.start_game(game)
+      game = %{game | state: {:choosing, %{player_tag: 0}}}
+
+      assert {:ok,
+              %{
+                players: %{
+                  0 => %{
+                    scorecard: %Yatzee.Scorecard{
+                      lower_section: %Yatzee.Scorecard.LowerSection{
+                        three_of_a_kind: 22
+                      }
+                    }
+                  }
+                }
+              }} = Yatzee.choose(game, :three_of_a_kind)
+    end
+
+    test "updates correct player's scoreboard" do
+      game = Yatzee.new_game(["Frank", "Jenny"])
+
+      dices = %{
+        one: %Dice{face: 5, name: :one},
+        two: %Dice{face: 5, name: :two},
+        three: %Dice{face: 5, name: :three},
+        four: %Dice{face: 6, name: :four},
+        five: %Dice{face: 1, name: :five}
+      }
+
+      game = %{game | dices: dices}
+      {:ok, game} = Yatzee.start_game(game)
+      game = %{game | state: {:choosing, %{player_tag: 0}}}
 
       assert {:ok,
               %{
@@ -61,6 +91,7 @@ defmodule YatzeeTest do
 
       game = %{game | dices: dices}
       {:ok, game} = Yatzee.start_game(game)
+      game = %{game | state: {:choosing, %{player_tag: 0}}}
 
       assert {:no_match,
               %{
@@ -89,6 +120,7 @@ defmodule YatzeeTest do
 
       game = %{game | dices: dices}
       {:ok, game} = Yatzee.start_game(game)
+      game = %{game | state: {:choosing, %{player_tag: 0}}}
 
       {:ok, game} = Yatzee.choose(game, :three_of_a_kind)
 
@@ -101,6 +133,7 @@ defmodule YatzeeTest do
       }
 
       game = %{game | dices: dices}
+      game = %{game | state: {:choosing, %{player_tag: 0}}}
 
       assert {:already_set, ^game} = Yatzee.choose(game, :three_of_a_kind)
     end
