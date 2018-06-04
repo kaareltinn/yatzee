@@ -173,5 +173,13 @@ defmodule YatzeeTest do
 
       assert {:already_set, ^game} = Yatzee.choose(game, :three_of_a_kind)
     end
+
+    test "does not update if invalid action" do
+      game = Yatzee.new_game(["Frank"])
+      {:ok, game} = Yatzee.start_game(game)
+      game = %{game | state: {:throwing_1, "Frank"}}
+
+      assert {:invalid_action, ^game} = Yatzee.choose(game, :three_of_a_kind)
+    end
   end
 end
