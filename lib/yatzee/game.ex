@@ -6,8 +6,8 @@ defmodule Yatzee.Game do
   @doc """
   Creates new game
   """
-  def start_link() do
-    GenServer.start_link(__MODULE__, :ok, [])
+  def start_link(game_name) do
+    GenServer.start_link(__MODULE__, :ok, name: via_tuple(game_name))
   end
 
   @doc """
@@ -17,8 +17,8 @@ defmodule Yatzee.Game do
   - :ok
   - :invalid_action
   """
-  def add_player(game, player_name) do
-    GenServer.call(game, {:add_player, player_name})
+  def add_player(game_name, player_name) do
+    GenServer.call(via_tuple(game_name), {:add_player, player_name})
   end
 
   @doc """
@@ -30,8 +30,8 @@ defmodule Yatzee.Game do
   - :ok
   - :invalid_action
   """
-  def start_game(game) do
-    GenServer.call(game, :start_game)
+  def start_game(game_name) do
+    GenServer.call(via_tuple(game_name), :start_game)
   end
 
   @doc """
@@ -43,8 +43,8 @@ defmodule Yatzee.Game do
   - :ok
   - :invalid_action
   """
-  def throw(game, dice_names) do
-    GenServer.call(game, {:throw, dice_names})
+  def throw(game_name, dice_names) do
+    GenServer.call(via_tuple(game_name), {:throw, dice_names})
   end
 
   @doc """
@@ -56,8 +56,25 @@ defmodule Yatzee.Game do
   - :no_match
   - :invalid_action
   """
-  def choose(game, category) do
-    GenServer.call(game, {:choose, category})
+  def choose(game_name, category) do
+    GenServer.call(via_tuple(game_name), {:choose, category})
+  end
+
+  @doc """
+  Returns a tuple used to register and lookup a game server process by name.
+  """
+  def via_tuple(game_name) do
+    {:via, Registry, {Yatzee.GameRegistry, game_name}}
+  end
+
+  @doc """
+  Returns the `pid` of the game server process registered under the
+  given `game_name`, or `nil` if no process is registered.
+  """
+  def game_pid(game_name) do
+    game_name
+    |> via_tuple()
+    |> GenServer.whereis()
   end
 
   # CALLBACKS
