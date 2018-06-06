@@ -4,6 +4,7 @@ defmodule Yatzee.Application do
   def start(_type, _args) do
     children = [
       {Registry, keys: :unique, name: Yatzee.GameRegistry},
+      Yatzee.GameSupervisor
     ]
 
     opts = [strategy: :one_for_one, name: Yatzee.Supervisor]
