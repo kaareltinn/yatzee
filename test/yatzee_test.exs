@@ -176,10 +176,18 @@ defmodule YatzeeTest do
 
     test "does not update if invalid action" do
       game = Yatzee.new_game(["Frank"])
+      dices = %{
+        one: %Dice{face: 6, name: :one},
+        two: %Dice{face: 6, name: :two},
+        three: %Dice{face: 5, name: :three},
+        four: %Dice{face: 2, name: :four},
+        five: %Dice{face: 1, name: :five}
+      }
+      game = %{game | dices: dices}
       {:ok, game} = Yatzee.start_game(game)
       game = %{game | state: {:throwing_1, "Frank"}}
 
-      assert {:invalid_action, ^game} = Yatzee.choose(game, :three_of_a_kind)
+      assert {:no_match, ^game} = Yatzee.choose(game, :three_of_a_kind)
     end
   end
 end

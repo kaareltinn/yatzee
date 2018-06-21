@@ -39,7 +39,7 @@ defmodule Yatzee.Engine do
     end
   end
 
-  def choose(%{state: {:choosing, player_name}} = game, category) do
+  def choose(%{state: {_, player_name}} = game, category) do
     with {:ok, %{state: {:throwing_1, _}} = game} <- States.check(:choose, game),
       {:ok, ^category, value} <- Rules.check(game.dices, category),
       :ok <- already_set?(game, player_name, category)

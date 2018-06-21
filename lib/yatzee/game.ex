@@ -7,7 +7,7 @@ defmodule Yatzee.Game do
   Creates new game
   """
   def start_link(game_name) do
-    GenServer.start_link(__MODULE__, :ok, name: via_tuple(game_name))
+    GenServer.start_link(__MODULE__, {:ok, game_name}, name: via_tuple(game_name))
   end
 
   @doc """
@@ -78,29 +78,47 @@ defmodule Yatzee.Game do
   end
 
   # CALLBACKS
-  def init(:ok) do
-    {:ok, init_state()}
+  def init({:ok, game_name}) do
+    {:ok, init_state(game_name)}
   end
 
   def handle_call({:add_player, player_name}, _from, game_state) do
     {result, new_game_state} = Yatzee.add_player(game_state, player_name)
+    :ets.insert(:games_table, {my_game_name(), new_game_state})
     {:reply, {result, new_game_state}, new_game_state}
   end
 
   def handle_call(:start_game, _from, game_state) do
     {result, new_game_state} = Yatzee.start_game(game_state)
+    :ets.insert(:games_table, {my_game_name(), new_game_state})
     {:reply, {result, new_game_state}, new_game_state}
   end
 
   def handle_call({:throw, dice_names}, _from, game_state) do
     new_game_state = Yatzee.throw(game_state, dice_names)
+    :ets.insert(:games_table, {my_game_name(), new_game_state})
     {:reply, new_game_state.dices, new_game_state }
   end
 
   def handle_call({:choose, category}, _from, game_state) do
     {result, new_game_state} = Yatzee.choose(game_state, category)
+    :ets.insert(:games_table, {my_game_name(), new_game_state})
     {:reply, {result, new_game_state}, new_game_state}
   end
 
-  defp init_state(), do: Yatzee.new_game()
+  defp init_state(game_name) do
+    game =
+      case :ets.lookup(:games_table, game_name) do
+        [] ->
+          game = Yatzee.new_game()
+          :ets.insert(:games_table, {game_name, game})
+          game
+        [{^game_name, game}] ->
+          game
+      end
+  end
+
+  defp my_game_name() do
+    Registry.keys(Yatzee.GameRegistry, self()) |> List.first
+  end
 end

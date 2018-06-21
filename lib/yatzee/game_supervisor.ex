@@ -22,6 +22,7 @@ defmodule Yatzee.GameSupervisor do
   end
 
   def stop_game(game_name) do
+    :ets.delete(:games_table, game_name)
     child_pid = Game.game_pid(game_name)
     DynamicSupervisor.terminate_child(__MODULE__, child_pid)
   end
