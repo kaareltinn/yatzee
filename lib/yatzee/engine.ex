@@ -1,6 +1,6 @@
 defmodule Yatzee.Engine do
 
-  alias Yatzee.{Rules, Scorecard, States, Player}
+  alias Yatzee.{Dices, Rules, Scorecard, States, Player}
 
   def new_game() do
     %{

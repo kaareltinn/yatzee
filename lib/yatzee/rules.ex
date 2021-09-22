@@ -1,4 +1,6 @@
 defmodule Yatzee.Rules do
+  alias Yatzee.{Dices}
+
   def call(dices) do
     [dices, []]
     |> check(:three_of_a_kind)

@@ -2,7 +2,7 @@ defmodule YatzeeTest do
   use ExUnit.Case
   doctest Yatzee
 
-  alias Dices.Dice
+  alias Yatzee.Dices.Dice
 
   test "new_game/1 returns new game with players" do
     game = Yatzee.new_game(["John", "Mike"])

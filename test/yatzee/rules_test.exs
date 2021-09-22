@@ -1,7 +1,7 @@
 defmodule Yatzee.RulesTest do
   use ExUnit.Case
 
-  alias Dices.Dice
+  alias Yatzee.Dices.Dice
   alias Yatzee.Rules
 
   ###################
