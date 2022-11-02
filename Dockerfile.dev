@@ -1,0 +1,23 @@
+ARG ELIXIR_VERSION=1.14.0
+ARG OTP_VERSION=24.2.1
+ARG DEBIAN_VERSION=bullseye-20210902-slim
+
+ARG IMAGE="hexpm/elixir:${ELIXIR_VERSION}-erlang-${OTP_VERSION}-debian-${DEBIAN_VERSION}"
+
+FROM ${IMAGE}
+
+RUN mix local.hex --force \
+    && curl -sL https://deb.nodesource.com/setup_lts.x | bash \
+    && apt-get update \
+    && apt-get install -y --no-install-recommends \
+      apt-utils \
+      build-essential \
+      inotify-tools \
+    && rm -rf /var/lib/apt/lists/* \
+    && mix local.rebar --force
+
+ENV APP_HOME /app
+RUN mkdir -p $APP_HOME
+WORKDIR $APP_HOME
+
+CMD ["tail", "-f", "/dev/null"]
