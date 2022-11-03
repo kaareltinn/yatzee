@@ -21,3 +21,5 @@ erl_crash.dump
 
 # ignore tags
 tags
+
+.tool-versions
