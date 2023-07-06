@@ -14,7 +14,7 @@ defmodule Yatzee.Dices do
     dices
     |> Enum.map(fn %Dice{name: name} = dice ->
       if Enum.member?(dice_names, name) do
-        %Dice{dice | face: Enum.random(1..5)}
+        %Dice{dice | face: Enum.random(1..6)}
       else
         dice
       end

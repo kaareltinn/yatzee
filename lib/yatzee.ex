@@ -1,8 +1,7 @@
 defmodule Yatzee do
-  defdelegate new_game(),                           to: Yatzee.Engine
-  defdelegate new_game(players),                    to: Yatzee.Engine
-  defdelegate add_player(game, player_name),        to: Yatzee.Engine
-  defdelegate start_game(game),                     to: Yatzee.Engine
-  defdelegate throw(game, dice_names),              to: Yatzee.Engine
-  defdelegate choose(game, category),               to: Yatzee.Engine
+  defdelegate new_game(game_name), to: Yatzee.GameSupervisor
+  defdelegate add_player(game_name, player_name), to: Yatzee.Game
+  defdelegate start_game(game_name), to: Yatzee.Game
+  defdelegate throw(game_name, dices), to: Yatzee.Game
+  defdelegate choose(game_name, category), to: Yatzee.Game
 end

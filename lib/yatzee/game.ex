@@ -83,42 +83,42 @@ defmodule Yatzee.Game do
   end
 
   def handle_call({:add_player, player_name}, _from, game_state) do
-    {result, new_game_state} = Yatzee.add_player(game_state, player_name)
+    {result, new_game_state} = Yatzee.Engine.add_player(game_state, player_name)
     :ets.insert(:games_table, {my_game_name(), new_game_state})
     {:reply, {result, new_game_state}, new_game_state}
   end
 
   def handle_call(:start_game, _from, game_state) do
-    {result, new_game_state} = Yatzee.start_game(game_state)
+    {result, new_game_state} = Yatzee.Engine.start_game(game_state)
     :ets.insert(:games_table, {my_game_name(), new_game_state})
     {:reply, {result, new_game_state}, new_game_state}
   end
 
   def handle_call({:throw, dice_names}, _from, game_state) do
-    new_game_state = Yatzee.throw(game_state, dice_names)
+    {result, new_game_state} = Yatzee.Engine.throw(game_state, dice_names)
     :ets.insert(:games_table, {my_game_name(), new_game_state})
-    {:reply, new_game_state.dices, new_game_state }
+    {:reply, {result, new_game_state.dices}, new_game_state}
   end
 
   def handle_call({:choose, category}, _from, game_state) do
-    {result, new_game_state} = Yatzee.choose(game_state, category)
+    {result, new_game_state} = Yatzee.Engine.choose(game_state, category)
     :ets.insert(:games_table, {my_game_name(), new_game_state})
     {:reply, {result, new_game_state}, new_game_state}
   end
 
   defp init_state(game_name) do
-    game =
-      case :ets.lookup(:games_table, game_name) do
-        [] ->
-          game = Yatzee.new_game()
-          :ets.insert(:games_table, {game_name, game})
-          game
-        [{^game_name, game}] ->
-          game
-      end
+    case :ets.lookup(:games_table, game_name) do
+      [] ->
+        game = Yatzee.Engine.new_game()
+        :ets.insert(:games_table, {game_name, game})
+        game
+
+      [{^game_name, game}] ->
+        game
+    end
   end
 
   defp my_game_name() do
-    Registry.keys(Yatzee.GameRegistry, self()) |> List.first
+    Registry.keys(Yatzee.GameRegistry, self()) |> List.first()
   end
 end

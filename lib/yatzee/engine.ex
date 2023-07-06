@@ -39,7 +39,7 @@ defmodule Yatzee.Engine do
     end
   end
 
-  def choose(%{state: {:choosing, player_name}} = game, category) do
+  def choose(%{state: {_, player_name}} = game, category) do
     with {:ok, %{state: {:throwing_1, _}} = game} <- States.check(:choose, game),
          {:ok, ^category, value} <- Rules.check(game.dices, category),
          :ok <- already_set?(game, player_name, category) do
@@ -69,6 +69,10 @@ defmodule Yatzee.Engine do
       get_player_scoreboard_path(player_name, section_key, category),
       value
     )
+  end
+
+  defp set_dices(game, []) do
+    %{game | dices: Dices.throw(game.dices, [:one, :two, :three, :four, :five])}
   end
 
   defp set_dices(game, dice_names) do

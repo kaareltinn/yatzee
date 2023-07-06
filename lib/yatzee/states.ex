@@ -25,6 +25,10 @@ defmodule Yatzee.States do
     success_response(game_state, {:choosing, player})
   end
 
+  def check(:choose, %{state: {:throwing_1, _current_player}} = game_state) do
+    {:invalid_action, game_state}
+  end
+
   def check(:choose, %{state: {_, _current_player}} = game_state) do
     if game_finished?(game_state) do
       success_response(game_state, :finished)

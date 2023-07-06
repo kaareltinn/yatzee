@@ -11,7 +11,7 @@ defmodule Yatzee.GameSupervisor do
     DynamicSupervisor.init(strategy: :one_for_one)
   end
 
-  def start_game(game_name) do
+  def new_game(game_name) do
     child_spec = %{
       id: Game,
       start: {Game, :start_link, [game_name]},
